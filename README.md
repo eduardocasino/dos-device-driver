@@ -8,7 +8,7 @@ Since I haven't seen anything like it out there, I'm sharing it in case anyone e
 
 #### License
 
-All my code is under the GNU General Public License. The device.h header is fron the FreeDOS kernel, with some minor modifications, and is also GPLd. See the LICENSE.txt file for details.
+All my code is under the GNU General Public License. The device.h header is from the FreeDOS kernel, with some minor modifications, and is also GPLd. See the LICENSE.txt file for details.
 
 #### Disclaimers
 
