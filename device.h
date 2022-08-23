@@ -133,6 +133,8 @@
  *      structures
  */
 
+#pragma pack( push, 1)
+
 /* Device header */
 
 struct dhdr {
@@ -505,6 +507,8 @@ typedef request __far *rqptr;
 typedef bpb __far *bpbptr;
 typedef int8_t __far *byteptr;
 typedef struct dhdr __far *dhdrptr;
+
+#pragma pack( pop )
 
 #endif /* _DEVICE_H_ */
 /*
