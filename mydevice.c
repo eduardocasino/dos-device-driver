@@ -24,10 +24,7 @@
 #include <stdint.h>
 #include <stddef.h>
 
-#pragma pack(push)
-#pragma pack(0)
 #include "device.h"
-#pragma pack(pop)
 
 typedef uint16_t (*driverFunction_t)(void);
 
