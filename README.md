@@ -1,4 +1,4 @@
-### Template for writing DOS Device Drivers in OpenWatcom C
+### Template for writing DOS Device Drivers in Open Watcom C
 
 #### About
 
@@ -29,14 +29,14 @@ THIS PROGRAM IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED 
 
 	For a char device:
 	```
-		DEVICE_NAME     equ     'MYDEVIC$'
-		DEVICE_ATTR     equ     ATTR_CHAR
+	  DEVICE_NAME     equ     'MYDEVIC$'
+	  DEVICE_ATTR     equ     ATTR_CHAR
 	```
 	For a block device supporting generic IOCTL and 32-bit sectors:
 
 	```
-		DEVICE_NAME     equ     0    ; First byte is number of units
-		DEVICE_ATTR     equ     ATTR_EXCALLS or ATTR_QRYIOCTL or ATTR_GENIOCTL or ATTR_HUGE
+	  DEVICE_NAME     equ     0    ; First byte is number of units
+	  DEVICE_ATTR     equ     ATTR_EXCALLS or ATTR_QRYIOCTL or ATTR_GENIOCTL or ATTR_HUGE
 	```
 
 * Implement the functions that your device is supporting and update the `dispatchTable` accordingly. Return value is a word (`uint16_t`) with the status code in the higher byte and the error code in the lower one.
@@ -46,19 +46,19 @@ THIS PROGRAM IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED 
     **NOTE**: If your driver implements a couple of functions, probably some if / else or a switch statement would be a better option than a dispatch table.
 
 * Place everything your driver must execute during initialization inside the `DeviceInit()` function. If an error should cause abort, indicate so by telling the kernel to free all the driver space:
-```
-fpRequest->r_endaddr = MK_FP( getCS(), 0 );
-```
+	```
+	  fpRequest->r_endaddr = MK_FP( getCS(), 0 );
+	```
 
 * Any static variable outside a `#pragma data_seg("_CODE")` - `pragma data_seg()` block will be freed after driver initialization. That include static variables inside functions, so make sure to declare them between those pragmas:
-```
-uint16_t exampleFunction( void )
-{
-#pragma data_seg("_CODE")
-    static uint32_t variable; 
-#pragma data_seg()
-    ...
-}
-```
+	```
+	  uint16_t exampleFunction( void )
+	  {
+	  #pragma data_seg("_CODE")
+    	static uint32_t variable; 
+	  #pragma data_seg()
+    	  ...
+	  }
+	```
 
 * Build using `wmake`
