@@ -89,10 +89,27 @@ static driverFunction_t currentFunction;
 #pragma data_seg()
 
 void far DeviceInterrupt( void )
-#pragma aux DeviceInterrupt "*_" parm [] modify [ax bx cx dx si di bp es fs gs]
+#pragma aux DeviceInterrupt "*_" parm []
 {
     __asm {
+        pushf
+        push ax
+        push bx
+        push cx
+        push dx
+        push si
+        push di
+        push bp
         push ds
+        push es
+    }
+#if (_M_IX86 >= 300)
+    __asm {
+        push fs
+        push gs
+    }
+#endif
+    __asm {
         push cs
         pop ds
     }
@@ -106,8 +123,23 @@ void far DeviceInterrupt( void )
         fpRequest->r_status = currentFunction();
     }
 
+#if ( _M_IX86 >= 300 )
     __asm {
+        pop gs
+        pop fs
+    }
+#endif
+    __asm {
+        pop es
         pop ds
+        pop bp
+        pop di
+        pop si
+        pop dx
+        pop cx
+        pop bx
+        pop ax
+        popf
     }
 }
 
