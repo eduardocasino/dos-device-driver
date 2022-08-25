@@ -143,13 +143,10 @@ void far DeviceInterrupt( void )
     }
 }
 
-void __declspec(naked) far DeviceStrategy( void )
+void __far DeviceStrategy( request __far *req )
+#pragma aux DeviceStrategy __parm [__es __bx]
 {
-    __asm {
-        mov     word ptr cs:[fpRequest], bx
-        mov     word ptr cs:[fpRequest+2], es
-        retf
-    }
+    fpRequest = req;
 }
 
 // Everything beyond and including DeviceInit() will be discarded from memory after initialization
