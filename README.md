@@ -22,6 +22,7 @@ THIS PROGRAM IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED 
 * "Advanced MSDOS Programming", 2nd ed. by Ray Duncan
 * The FreeDOS kernel
 * Ralf Brown's Interrupt List
+* Jiří Malák, of [Open Watcom v2](https://github.com/jmalak/open-watcom-v2) fame, for insights on the code and proper use of the OW toolchain features.
 
 #### Usage
 
