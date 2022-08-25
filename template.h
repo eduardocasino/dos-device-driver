@@ -22,8 +22,6 @@
 #ifndef _TEMPLATE_H_
 #define _TEMPLATE_H_
 
-#include "device.h"
-
 #if ( _M_IX86 >= 0x200 )
 #define push_all "pusha"
 #define pop_all "popa"
