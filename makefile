@@ -23,13 +23,13 @@ CC = wcc
 AS = wasm
 LD = wlink
 RM = rm -f
-CFLAGS  = -0 -bt=dos -ms -q -s -osh -zu 
+CFLAGS  = -0 -bt=dos -ms -q -s -osh -zu
 ASFLAGS = -bt=DOS -zq -mt -0
-LDFLAGS = SYSTEM dos DISABLE 1014 OPTION QUIET, STATICS, MAP=mydevice.map
+LDFLAGS = SYSTEM dos DISABLE 1014 OPTION QUIET, STATICS, MAP=template.map
 
-TARGET = mydevice.sys
+TARGET = template.sys
 
-OBJ =	cstrtsys.obj mydevice.obj
+OBJ =	cstrtsys.obj template.obj
 
 all : $(TARGET)
 

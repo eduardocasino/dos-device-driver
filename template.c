@@ -25,11 +25,14 @@
 #include <stddef.h>
 
 #include "device.h"
+#include "template.h"
 
-typedef uint16_t (*driverFunction_t)(void);
+// Function declarations
+//
+static uint16_t DeviceInit( void );
+
 
 #pragma data_seg("_CODE")
-
 //
 // Place here any variables or constants that should remain after driver installation
 //
@@ -37,6 +40,7 @@ typedef uint16_t (*driverFunction_t)(void);
 static request __far *fpRequest = (request __far *)0;
 
 #pragma data_seg()
+
 
 static char hellomsg[] =    "\r\nDOS Device Driver Template in Open Watcom C\r\n$";
 
@@ -51,8 +55,6 @@ static uint16_t Close( void )
 } 
 
 #pragma data_seg("_CODE")
-
-static uint16_t DeviceInit( void );
 
 static driverFunction_t dispatchTable[] =
 {
@@ -91,28 +93,7 @@ static driverFunction_t currentFunction;
 void __far DeviceInterrupt( void )
 #pragma aux DeviceInterrupt __parm []
 {
-    __asm {
-        pushf
-        push ax
-        push bx
-        push cx
-        push dx
-        push si
-        push di
-        push bp
-        push ds
-        push es
-    }
-#if (_M_IX86 >= 300)
-    __asm {
-        push fs
-        push gs
-    }
-#endif
-    __asm {
-        push cs
-        pop ds
-    }
+    push_regs();
 
     if ( fpRequest->r_command > C_MAXCMD || NULL == (currentFunction = dispatchTable[fpRequest->r_command]) )
     {
@@ -123,24 +104,7 @@ void __far DeviceInterrupt( void )
         fpRequest->r_status = currentFunction();
     }
 
-#if ( _M_IX86 >= 300 )
-    __asm {
-        pop gs
-        pop fs
-    }
-#endif
-    __asm {
-        pop es
-        pop ds
-        pop bp
-        pop di
-        pop si
-        pop dx
-        pop cx
-        pop bx
-        pop ax
-        popf
-    }
+    pop_regs();
 }
 
 void __far DeviceStrategy( request __far *req )
@@ -149,20 +113,9 @@ void __far DeviceStrategy( request __far *req )
     fpRequest = req;
 }
 
+
 // Everything beyond and including DeviceInit() will be discarded from memory after initialization
 //
-
-__segment getCS( void );
-#pragma aux getCS = \
-    "mov ax, cs";
-
-static void printMsg( const char *msg );
-#pragma aux printMsg =        \
-    "mov    ah, 0x9"        \
-    "int    0x21"            \
-    __parm [__dx]                \
-    __modify [__ax __di __es];
-
 static uint16_t DeviceInit( void )
 {
     printMsg( hellomsg );
