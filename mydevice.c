@@ -34,7 +34,7 @@ typedef uint16_t (*driverFunction_t)(void);
 // Place here any variables or constants that should remain after driver installation
 //
 
-static request far *fpRequest = (request far *)0;
+static request __far *fpRequest = (request __far *)0;
 
 #pragma data_seg()
 
@@ -88,8 +88,8 @@ static driverFunction_t currentFunction;
 
 #pragma data_seg()
 
-void far DeviceInterrupt( void )
-#pragma aux DeviceInterrupt "*_" parm []
+void __far DeviceInterrupt( void )
+#pragma aux DeviceInterrupt __parm []
 {
     __asm {
         pushf
@@ -160,8 +160,8 @@ static void printMsg( const char *msg );
 #pragma aux printMsg =        \
     "mov    ah, 0x9"        \
     "int    0x21"            \
-    parm [dx]                \
-    modify [ax di es];
+    __parm [__dx]                \
+    __modify [__ax __di __es];
 
 static uint16_t DeviceInit( void )
 {
