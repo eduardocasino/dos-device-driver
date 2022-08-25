@@ -25,11 +25,11 @@ LD = wlink
 RM = rm -f
 CFLAGS  = -0 -bt=dos -ms -q -s -osh -zu 
 ASFLAGS = -bt=DOS -zq -mt -0
-LDFLAGS =	SYSTEM dos DISABLE 1014 OPTION QUIET OPTION STATICS OPTION MAP=mydevice.map
+LDFLAGS = SYSTEM dos DISABLE 1014 OPTION QUIET, STATICS, MAP=mydevice.map
 
 TARGET = mydevice.sys
 
-OBJ =	cstrtsys.o mydevice.obj
+OBJ =	cstrtsys.obj mydevice.obj
 
 all : $(TARGET)
 
@@ -39,10 +39,8 @@ clean : .SYMBOLIC
 $(TARGET) : $(OBJ)
 	$(LD) $(LDFLAGS) NAME $(TARGET) FILE {$(OBJ)}
 
-cstrtsys.o : cstrtsys.asm .AUTODEPEND
-	$(AS) $* $(ASFLAGS)
+.asm.obj : .AUTODEPEND
+	$(AS) $(ASFLAGS) -fo=$@ $<
 
-mydevice.obj : mydevice.c .AUTODEPEND
-
-.c.obj :
+.c.obj : .AUTODEPEND
 	$(CC) $(CFLAGS) -fo=$@ $<
