@@ -38,6 +38,34 @@
 #define pop_segregs "pop es" "pop ds"
 #endif
 
+#ifdef USE_INTERNAL_STACK
+
+#ifndef STACK_SIZE
+#define STACK_SIZE 300
+#endif
+
+extern uint8_t *stack_bottom;
+extern uint32_t dos_stack;
+
+extern void switch_stack( void );
+#pragma aux switch_stack = \
+    "cli" \
+    "mov word ptr [cs:dos_stack], sp" \
+    "mov word ptr [cs:dos_stack+2], ss" \
+    "push cs" \
+    "pop ss" \
+    "mov sp, word ptr [cs:stack_bottom]" \
+    "sti";
+
+extern void restore_stack( void );
+#pragma aux restore_stack = \
+    "cli" \
+    "mov sp, word ptr [cs:dos_stack]" \
+    "mov ss, word ptr [cs:dos_stack+2]" \
+    "sti";
+
+#endif /* USE_INTERNAL_STACK */
+
 extern void push_regs( void );
 #pragma aux push_regs = \
     "pushf" \

@@ -19,13 +19,21 @@
 # MA  02110-1301, USA.
 #
 
+#!define USE_INTERNAL_STACK
+
 CC = wcc
 AS = wasm
 LD = wlink
 RM = rm -f
-CFLAGS  = -0 -bt=dos -ms -q -s -osh -zu
+CFLAGS  = -0 -bt=dos -ms -q -s -osh
 ASFLAGS = -bt=DOS -zq -mt -0
 LDFLAGS = SYSTEM dos DISABLE 1014 OPTION QUIET, STATICS, MAP=template.map
+
+!ifdef USE_INTERNAL_STACK
+CFLAGS += -DUSE_INTERNAL_STACK -DSTACK_SIZE=300
+!else
+CFLAGS += -zu
+!endif
 
 TARGET = template.sys
 

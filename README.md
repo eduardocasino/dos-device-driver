@@ -44,7 +44,9 @@ THIS PROGRAM IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED 
 
 	The available stack space for device drivers is very scarce. Restrict the use of automatic variables to simple data types. If you want to declare variables inside the scope of a function, make them `static`
 
-    **NOTE**: If your driver implements a couple of functions, probably some if / else or a switch statement would be a better option than a dispatch table.
+	Alternatively, uncomment `!define USE_INTERNAL_STACK` in the makefile. This will make the driver switch to an internal stack on entry and give enough room for using automatic variables. The default internal stack size is 300 bytes. Modify the `STACK_SIZE` definition in the template.h file or add `-DSTACK_SIZE=<size>` to `CFLAGS`
+
+    **NOTE**: If your driver implements just a couple of functions, probably some if / else or a switch statement would be a better option than a dispatch table.
 
 * Place everything your driver must execute during initialization inside the `DeviceInit()` function. If an error should cause abort, indicate so by telling the kernel to free all the driver space:
 	```

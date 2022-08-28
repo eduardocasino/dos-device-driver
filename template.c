@@ -36,6 +36,13 @@ static uint16_t DeviceInit( void );
 //
 // Place here any variables or constants that should remain after driver installation
 //
+#ifdef USE_INTERNAL_STACK
+
+static uint8_t our_stack[STACK_SIZE];
+uint8_t *stack_bottom = our_stack + STACK_SIZE;
+uint32_t dos_stack;
+
+#endif // USE_INTERNAL_STACK
 
 static request __far *fpRequest = (request __far *)0;
 
@@ -93,6 +100,10 @@ static driverFunction_t currentFunction;
 void __far DeviceInterrupt( void )
 #pragma aux DeviceInterrupt __parm []
 {
+#ifdef USE_INTERNAL_STACK
+    switch_stack();
+#endif
+
     push_regs();
 
     if ( fpRequest->r_command > C_MAXCMD || NULL == (currentFunction = dispatchTable[fpRequest->r_command]) )
@@ -105,6 +116,10 @@ void __far DeviceInterrupt( void )
     }
 
     pop_regs();
+
+#ifdef USE_INTERNAL_STACK
+    restore_stack();
+#endif
 }
 
 void __far DeviceStrategy( request __far *req )
