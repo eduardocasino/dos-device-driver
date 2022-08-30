@@ -27,7 +27,9 @@ LD = wlink
 RM = rm -f
 CFLAGS  = -0 -bt=dos -ms -q -s -osh
 ASFLAGS = -bt=DOS -zq -mt -0
-LDFLAGS = SYSTEM dos DISABLE 1014 OPTION QUIET, STATICS, MAP=template.map
+LDFLAGS =	SYSTEM dos &
+			ORDER clname HEADER clname DATA clname CODE clname BSS clname INIT &
+			DISABLE 1014 OPTION QUIET, STATICS, MAP=template.map
 
 !ifdef USE_INTERNAL_STACK
 CFLAGS += -DUSE_INTERNAL_STACK -DSTACK_SIZE=300
@@ -37,7 +39,7 @@ CFLAGS += -zu
 
 TARGET = template.sys
 
-OBJ =	cstrtsys.obj template.obj
+OBJ =	cstrtsys.obj devinit.obj template.obj
 
 all : $(TARGET)
 
@@ -46,6 +48,9 @@ clean : .SYMBOLIC
 
 $(TARGET) : $(OBJ)
 	$(LD) $(LDFLAGS) NAME $(TARGET) FILE {$(OBJ)}
+
+devinit.obj : devinit.c .AUTODEPEND
+	$(CC) $(CFLAGS) -nt=_INIT -nc=INIT -fo=$@ $<
 
 .asm.obj : .AUTODEPEND
 	$(AS) $(ASFLAGS) -fo=$@ $<

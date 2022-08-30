@@ -22,6 +22,10 @@
 #ifndef _TEMPLATE_H_
 #define _TEMPLATE_H_
 
+#include <stdint.h>
+
+#include "device.h"
+
 #if ( _M_IX86 >= 0x200 )
 #define push_all "pusha"
 #define pop_all "popa"
@@ -91,5 +95,7 @@ extern void printMsg( const char * );
     __modify [__ax __di __es];
 
 typedef uint16_t (*driverFunction_t)(void);
+
+extern request __far *fpRequest;
 
 #endif /* _TEMPLATE_H_ */

@@ -47,17 +47,26 @@ DEVICE_ATTR     equ     ATTR_CHAR or ATTR_EXCALLS
 
 ; End of user modifiable part
 
-DGROUP  group   _TEXT, _BSS
+DGROUP  group   _HEADER, _TEXT, _BSS, _INIT
 
 _BSS    segment word public 'BSS'
-        
-        public  _small_code_
-
-_small_code_    dw      ?
-
 _BSS    ends   
 
 _TEXT   segment word public 'CODE'
+_TEXT   ends
+
+_INIT   segment word public 'INIT'
+        
+        public  _transient_data
+        public  _small_code_
+
+_transient_data label near
+
+_small_code_    dw      ?
+
+_INIT   ends
+
+_HEADER segment word public 'HEADER'
 
         org     0
 
@@ -74,6 +83,6 @@ _cstart_ label near
         dw      DeviceInterrupt_
         db      DEVICE_NAME
 
-_TEXT   ends
+_HEADER ends
 
         end     _cstart_

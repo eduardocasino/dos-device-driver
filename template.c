@@ -20,22 +20,13 @@
  *
  */
 
-#include <dos.h>
 #include <stdint.h>
 #include <stddef.h>
 
 #include "device.h"
+#include "devinit.h"
 #include "template.h"
 
-// Function declarations
-//
-static uint16_t DeviceInit( void );
-
-
-#pragma data_seg("_CODE")
-//
-// Place here any variables or constants that should remain after driver installation
-//
 #ifdef USE_INTERNAL_STACK
 
 static uint8_t our_stack[STACK_SIZE];
@@ -44,12 +35,7 @@ uint32_t dos_stack;
 
 #endif // USE_INTERNAL_STACK
 
-static request __far *fpRequest = (request __far *)0;
-
-#pragma data_seg()
-
-
-static char hellomsg[] =    "\r\nDOS Device Driver Template in Open Watcom C\r\n$";
+request __far *fpRequest = (request __far *)0;
 
 static uint16_t Open( void )
 {
@@ -60,8 +46,6 @@ static uint16_t Close( void )
 {
     return S_DONE;
 } 
-
-#pragma data_seg("_CODE")
 
 static driverFunction_t dispatchTable[] =
 {
@@ -95,8 +79,6 @@ static driverFunction_t dispatchTable[] =
 
 static driverFunction_t currentFunction;
 
-#pragma data_seg()
-
 void __far DeviceInterrupt( void )
 #pragma aux DeviceInterrupt __parm []
 {
@@ -127,17 +109,4 @@ void __far DeviceStrategy( request __far *req )
 {
     fpRequest = req;
 }
-
-
-// Everything beyond and including DeviceInit() will be discarded from memory after initialization
-//
-static uint16_t DeviceInit( void )
-{
-    printMsg( hellomsg );
-
-    fpRequest->r_endaddr = MK_FP( getCS(), DeviceInit );
-
-    return 0;
-}
-
 
