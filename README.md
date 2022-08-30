@@ -40,7 +40,7 @@ THIS PROGRAM IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED 
 	  DEVICE_ATTR     equ     ATTR_EXCALLS or ATTR_QRYIOCTL or ATTR_GENIOCTL or ATTR_HUGE
 	```
 
-* Implement the functions that your device is supporting and update the `dispatchTable` accordingly. Return value is a word (`uint16_t`) with the status code in the higher byte and the error code in the lower one.
+* Implement the functions that your device is supporting in template.c and update the `dispatchTable` accordingly. Return value is a word (`uint16_t`) with the status code in the higher byte and the error code in the lower one.
 
 	The available stack space for device drivers is very scarce. Restrict the use of automatic variables to simple data types. If you want to declare variables inside the scope of a function, make them `static`
 
@@ -48,20 +48,11 @@ THIS PROGRAM IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED 
 
     **NOTE**: If your driver implements just a couple of functions, probably some if / else or a switch statement would be a better option than a dispatch table.
 
-* Place everything your driver must execute during initialization inside the `DeviceInit()` function. If an error should cause abort, indicate so by telling the kernel to free all the driver space:
+* Place everything your driver must execute during initialization inside the `DeviceInit()` function in devinit.c. If an error should cause abort, indicate so by telling the kernel to free all the driver space:
 	```
 	  fpRequest->r_endaddr = MK_FP( getCS(), 0 );
 	```
 
-* Any static variable outside a `#pragma data_seg("_CODE")` - `pragma data_seg()` block will be freed after driver initialization. That include static variables inside functions, so make sure to declare them between those pragmas:
-	```
-	  uint16_t exampleFunction( void )
-	  {
-	  #pragma data_seg("_CODE")
-    	static uint32_t variable; 
-	  #pragma data_seg()
-    	  ...
-	  }
-	```
+	Any code and data in devinit.c will be discarded after driver initialization.
 
 * Build using `wmake`
